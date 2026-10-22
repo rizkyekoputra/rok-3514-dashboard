@@ -156,7 +156,7 @@ footer { margin-top: 24px; color: var(--text-muted); font-size: 12px; }
     </div>
     <div class="table-wrap"><table>
       <thead><tr>
-        <th>Player</th><th>Week</th><th class="num">Missing forts</th><th class="num">Fine</th><th>Status</th><th id="finesActTh" hidden></th>
+        <th>Player</th><th id="finesActTh" hidden></th><th>Week</th><th class="num">Missing forts</th><th class="num">Fine</th><th>Status</th>
       </tr></thead>
       <tbody id="finesBody"></tbody>
     </table></div>
@@ -456,7 +456,7 @@ function renderOfficer() {
   bar.hidden = !r4key || !ledger;
   bar.classList.toggle('bad', !officer);
   bar.innerHTML = officer
-    ? `<span>Logged in as <b>${esc(officer)}</b> (R4) · you can mark fines as paid below.</span><button class="act ghost" id="logoutBtn" type="button">Log out on this device</button>`
+    ? `<span>Logged in as <b>${esc(officer)}</b> (R4) · <a href="#finesCard">Go to fines ↓</a> to mark them as paid.</span><button class="act ghost" id="logoutBtn" type="button">Log out on this device</button>`
     : `<span>This R4 link is not valid or has been revoked. Ask the R5 for a new one.</span><button class="act ghost" id="logoutBtn" type="button">Dismiss</button>`;
   const b = $('logoutBtn'); if (b) b.addEventListener('click', forgetKey);
   $('finesActTh').hidden = !officer;
@@ -474,7 +474,7 @@ function renderFines() {
       : paid ? `${gold(paid)} of ${gold(f.a)} paid${l ? ` <span class="muted">${esc(l.by)}</span>` : ''}` : '<span class="below">Unpaid</span>';
     const act = !officer ? '' : `<td>${l ? `<button class="act ghost" data-undo="${f.id}" type="button">Undo</button>`
       : `<button class="act" data-pay="${f.id}" type="button">Mark paid</button>`}</td>`;
-    return `<tr><td>${esc(name)}</td><td>${weekLabel(f.wk)}</td><td class="num">${f.m}</td><td class="num">${gold(f.a)}</td><td>${status}</td>${act}</tr>`;
+    return `<tr><td>${esc(name)}</td>${act}<td>${weekLabel(f.wk)}</td><td class="num">${f.m}</td><td class="num">${gold(f.a)}</td><td>${status}</td></tr>`;
   }).join('') || `<tr><td colspan="${officer ? 6 : 5}" class="empty">No fines match.</td></tr>`;
   const owed = F.reduce((a, f) => a + Math.max(0, f.a - paidOf(f)), 0);
   $('finesCount').textContent = `${rows.length} fine${rows.length === 1 ? '' : 's'} · ${gold(owed)} gold still unpaid in total` +
